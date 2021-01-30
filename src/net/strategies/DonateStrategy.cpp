@@ -54,25 +54,8 @@ xmrig::DonateStrategy::DonateStrategy(Controller *controller, IStrategyListener 
     m_target(0),
     m_ticks(0)
 {
-    uint8_t hash[200];
-    char userId[65] = { 0 };
-    const char *user = controller->config()->pools().data().front().user();
 
-    keccak(reinterpret_cast<const uint8_t *>(user), strlen(user), hash);
-    Buffer::toHex(hash, 32, userId);
-
-    m_client = new Client(-1, Platform::userAgent(), this);
-
-#   ifdef XMRIG_FEATURE_TLS
-    m_client->setPool(Pool("donate.ssl.xmrig.com", 8443, userId, nullptr, Pool::kKeepAliveTimeout, false, true, Pool::MODE_DAEMON));
-#   else
-    m_client->setPool(Pool("donate.v2.xmrig.com", 5555, userId, nullptr, Pool::kKeepAliveTimeout, false, false, Pool::MODE_DAEMON));
-#   endif
-
-    m_client->setRetryPause(5000);
-    m_client->setQuiet(true);
-
-    m_target = (100 - controller->config()->pools().donateLevel()) * 60 * randomf(0.5, 1.5);
+        
 }
 
 
